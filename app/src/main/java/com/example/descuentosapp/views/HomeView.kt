@@ -25,11 +25,11 @@ import com.example.descuentosapp.components.MainButton
 import com.example.descuentosapp.components.MainTextField
 import com.example.descuentosapp.components.SpaceH
 import com.example.descuentosapp.components.TwoCard
-import kotlin.math.round
+import com.example.descuentosapp.views.viewmodel.CalcularViewModel1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView() {
+fun HomeView(viewModel: CalcularViewModel1) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -40,12 +40,12 @@ fun HomeView() {
             )
         }
     ) {
-        ContentHomeView(it)
+        ContentHomeView(it, viewModel)
     }
 }
 
 @Composable
-fun ContentHomeView(paddingValues: PaddingValues) {
+fun ContentHomeView(paddingValues: PaddingValues, viewModel: CalcularViewModel1) {
     Column(
         modifier = Modifier
             .padding(paddingValues)
@@ -68,17 +68,16 @@ fun ContentHomeView(paddingValues: PaddingValues) {
         SpaceH()
         MainTextField(value = descuento, label = "Descuento", onChangeValue = { descuento = it })
         SpaceH(16.dp)
-        MainButton(text = "Generar descuento") {
 
-            if (precio.isNullOrEmpty() || descuento.isNullOrEmpty()) {
-                showAlert = true
-            } else {
-                precioDescuento =
-                    calcularPrecio(precio = precio.toDouble(), descuento = descuento.toDouble())
-                totalDescuento =
-                    calcularDescuento(precio = precio.toDouble(), descuento = descuento.toDouble())
+        MainButton(text = "Generar descuento") {
+            val result = viewModel.calcular(precio = precio, descuento = descuento)
+            showAlert = result.first
+            if (!showAlert) {
+                precioDescuento = result.second.first
+                totalDescuento = result.second.second
             }
         }
+
         SpaceH()
         MainButton(text = "Limpiar", color = Color.Red) {
             precio = ""
@@ -94,15 +93,4 @@ fun ContentHomeView(paddingValues: PaddingValues) {
                 onConfirmClick = { showAlert = false })
         }
     }
-}
-
-fun calcularPrecio(precio: Double, descuento: Double): Double {
-    val res = precio - calcularDescuento(precio = precio, descuento = descuento)
-    return round(res * 100) / 100.0
-}
-
-fun calcularDescuento(precio: Double, descuento: Double): Double {
-    val res = precio * (1 - descuento / 100)
-    return round(res * 100) / 100.0
-
 }
