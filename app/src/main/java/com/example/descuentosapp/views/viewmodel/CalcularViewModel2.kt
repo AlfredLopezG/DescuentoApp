@@ -37,10 +37,10 @@ class CalcularViewModel2 : ViewModel() {
         private set
 
     //Ejemplo de como setear valores a los tipos de variables
-    fun cal() {
+    /*fun cal() {
         //_precio.value = "nuevo valor"
         precio2 = "nuevo valor"
-    }
+    }*/
 
     fun calcular() {
 
