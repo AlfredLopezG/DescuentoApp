@@ -42,6 +42,7 @@ pipeline{
 
     post {
         always {
+            //junit 'app/build/reports/**/*.xml'
             cleanWs()
         }
     }
