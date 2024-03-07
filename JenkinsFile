@@ -1,0 +1,48 @@
+pipeline{
+    agent {
+        docker { image 'cimg/android:2024.01.1' }
+    }
+
+    stages{
+        stage('Build'){
+            steps{
+            /*
+                sh '''
+                    echo "Compilar APK"
+                    ./gradlew :app:assembleDebug
+                '''
+*/
+
+                sh '''
+                    echo "Compilar APK"
+                    ./gradlew build
+                '''
+
+            }
+        }
+
+        stage('Test'){
+            steps{
+/*
+                sh '''
+                    echo "Pruebas Unitarias"
+                    ./gradlew :app:assembleDebugAndroidTest
+                '''
+*/
+
+                sh '''
+                    echo "Pruebas Unitarias"
+                    ./gradlew test
+                '''
+
+
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
