@@ -1,3 +1,4 @@
+//Jenkinsfile local
 pipeline{
     agent {
         docker { image 'cimg/android:2024.01.1' }
