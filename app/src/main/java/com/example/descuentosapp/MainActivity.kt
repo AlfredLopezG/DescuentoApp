@@ -13,7 +13,9 @@ import com.example.descuentosapp.views.HomeView3
 import com.example.descuentosapp.views.viewmodel.CalcularViewModel1
 import com.example.descuentosapp.views.viewmodel.CalcularViewModel2
 import com.example.descuentosapp.views.viewmodel.CalcularViewModel3
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -50,8 +50,9 @@ if [ "$TEST_TYPE_PARAM" = "manual" ]; then
   sleep $minutes
 else
   # Run automated tests
-  ${WORKSPACE}/gradlew :app:connectedCheck :app:installDebug :app:installDebugAndroidTest
-  $ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell am instrument -w com.example.batterytestapplication/android.support.test.runner.AndroidJUnitRunner
+  #${WORKSPACE}/gradlew :app:connectedCheck :app:installDebug :app:installDebugAndroidTest
+  #$ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell am instrument -w com.example.batterytestapplication/android.support.test.runner.AndroidJUnitRunner
+  ${WORKSPACE}/gradlew connectedAndroidTest
 fi
 
 # Generates battery stats file

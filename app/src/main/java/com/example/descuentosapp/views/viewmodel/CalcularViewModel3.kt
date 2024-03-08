@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.descuentosapp.models.CalcularState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlin.math.round
 
-class CalcularViewModel3 : ViewModel() {
+@HiltViewModel
+class CalcularViewModel3 @Inject constructor(): ViewModel() {
 
     var state by mutableStateOf(CalcularState())
         private set

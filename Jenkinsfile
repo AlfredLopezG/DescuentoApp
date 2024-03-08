@@ -75,7 +75,6 @@ pipeline {
                     echo "*          🧪 Iniciando las pruebas UI🧪                  *"
                     echo "*                                                      *"
                     echo "********************************************************"
-                    ./gradlew build
                     '''
                     script {
                         compileAndroid = sh (script: 'bash scripts/tests.sh ${PACKAGE_ID_PARAM} ${OS_TYPE_PARAM} ${TEST_TYPE_PARAM} ${TEST_TIME_PARAM} ${STRICT_MODE_PARAM} ${APP_TYPE_PARAM}')
@@ -99,6 +98,12 @@ pipeline {
                     buildFile = sh (script: 'python3 ${WORKSPACE}/scripts/readit.py ${WORKSPACE} ${OS_TYPE_PARAM} ${TEST_TYPE_PARAM} ${TEST_TIME_PARAM} ${STRICT_MODE_PARAM} ${APP_TYPE_PARAM} ${PACKAGE_ID_PARAM}')
                 }
             }
+        }
+    }
+
+    post{
+        always{
+            archiveArtifacts artifacts: 'app/build/outputs/apk/debug/app-debug.apk', onlyIfSuccessful: true
         }
     }
 }
