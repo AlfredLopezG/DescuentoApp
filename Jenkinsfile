@@ -36,33 +36,20 @@ pipeline {
 
     stages {
 
-        stage ('Build') {
-            steps {
-                sh '''
-                set
-                echo "********************************************************"
-                echo "*                                                      *"
-                echo "*   🚀 Iniciando el proceso de construcción 🚀          *"
-                echo "*                                                      *"
-                echo "********************************************************"
-                ./gradlew build
-                '''
-            }
-        }
-
-        stage('Test'){
+        stage('Unit Test'){
             steps{
-                /*
+
                 sh '''
                 echo "Pruebas Unitarias"
-                ./gradlew :app:assembleDebugAndroidTest
-                '''
-                */
 
-                sh '''
+                ./gradlew :app:testDebugUnitTest
+                '''
+
+
+                /*sh '''
                 echo "Pruebas Unitarias"
                 ./gradlew test
-                '''
+                '''*/
             }
         }
 
@@ -72,13 +59,12 @@ pipeline {
                     set
                     echo "********************************************************"
                     echo "*                                                      *"
-                    echo "*          🧪 Iniciando las pruebas UI🧪                  *"
+                    echo "*          🧪 Iniciando las pruebas UI🧪               *"
                     echo "*                                                      *"
                     echo "********************************************************"
                     '''
-                    script {
-                        compileAndroid = sh (script: 'bash scripts/tests.sh ${PACKAGE_ID_PARAM} ${OS_TYPE_PARAM} ${TEST_TYPE_PARAM} ${TEST_TIME_PARAM} ${STRICT_MODE_PARAM} ${APP_TYPE_PARAM}')
-                }
+
+                echo ''' ./gradlew :app:connectedDebugAndroidTest '''
             }
         }
 
@@ -88,22 +74,40 @@ pipeline {
                 set
                 echo "**********************************************************"
                 echo "*                                                        *"
-                echo "*   🔋 Iniciando el análisis del consumo de batería 🔋    *"
+                echo "*   🔋 Iniciando el análisis del consumo de batería 🔋   *"
                 echo "*                                                        *"
                 echo "**********************************************************"
                 sleep 10
                 '''
 
                 script {
+                    compileAndroid = sh (script: 'bash scripts/tests.sh ${PACKAGE_ID_PARAM} ${OS_TYPE_PARAM} ${TEST_TYPE_PARAM} ${TEST_TIME_PARAM} ${STRICT_MODE_PARAM} ${APP_TYPE_PARAM}')
+                }
+
+                script {
                     buildFile = sh (script: 'python3 ${WORKSPACE}/scripts/readit.py ${WORKSPACE} ${OS_TYPE_PARAM} ${TEST_TYPE_PARAM} ${TEST_TIME_PARAM} ${STRICT_MODE_PARAM} ${APP_TYPE_PARAM} ${PACKAGE_ID_PARAM}')
                 }
+            }
+        }
+
+        stage ('Build') {
+            steps {
+                sh '''
+                set
+                echo "********************************************************"
+                echo "*                                                      *"
+                echo "*   🚀 Iniciando el proceso de construcción 🚀         *"
+                echo "*                                                      *"
+                echo "********************************************************"
+                ./gradlew assembleRelease
+                '''
             }
         }
     }
 
     post{
         always{
-            archiveArtifacts artifacts: 'app/build/outputs/apk/debug/app-debug.apk', onlyIfSuccessful: true
+            archiveArtifacts artifacts: 'app/build/outputs/apk/release/app-release-unsigned.apk', onlyIfSuccessful: true
         }
     }
 }
