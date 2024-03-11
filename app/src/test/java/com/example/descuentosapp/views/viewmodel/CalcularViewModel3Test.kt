@@ -115,7 +115,7 @@ class CalcularViewModel3Test{
     @Test
     fun cancelAlert_precio_descuento_empty_success(){
 
-        val calcularStateExpected = CalcularState("", "", precioDescuento = 10.0, totalDescuento = 10.0, false)
+        val calcularStateExpected = CalcularState("", "", precioDescuento = 0.0, totalDescuento = 0.0, false)
 
         val currentPrecio = ""
         val currentDescuento = ""

@@ -64,7 +64,11 @@ pipeline {
                     echo "********************************************************"
                     '''
 
-                echo ''' ./gradlew :app:connectedDebugAndroidTest '''
+                sh '''
+                    $ANDROID_HOME/platform-tools/adb connect 192.168.252.125:5555
+                    $ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell input keyevent 82
+                    ./gradlew :app:connectedDebugAndroidTest
+                    '''
             }
         }
 
