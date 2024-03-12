@@ -43,7 +43,7 @@ pipeline {
                     set
                     echo "********************************************************"
                     echo "*                                                      *"
-                    echo "*          🧪 Iniciando las pruebas UI🧪               *"
+                    echo "*          🧪 Iniciando Unit Test 🧪                  *"
                     echo "*                                                      *"
                     echo "********************************************************"
                 '''
