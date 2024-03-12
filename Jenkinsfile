@@ -40,9 +40,18 @@ pipeline {
             steps{
 
                 sh '''
-                echo "Pruebas Unitarias"
+                    set
+                    echo "********************************************************"
+                    echo "*                                                      *"
+                    echo "*          🧪 Iniciando las pruebas UI🧪               *"
+                    echo "*                                                      *"
+                    echo "********************************************************"
+                '''
 
-                ./gradlew :app:testDebugUnitTest
+                sh '''
+                    echo "Pruebas Unitarias"
+
+                    ./gradlew :app:testDebugUnitTest
                 '''
 
 
@@ -72,6 +81,24 @@ pipeline {
             }
         }
 
+        stage('Generate battery stats') {
+            steps {
+                sh '''
+                set
+                echo "**********************************************************"
+                echo "*                                                        *"
+                echo "*   🔋 Generar información del consumo de bateria 🔋    *"
+                echo "*                                                        *"
+                echo "**********************************************************"
+                sleep 10
+                '''
+
+                script {
+                    compileAndroid = sh (script: 'bash scripts/tests.sh ${PACKAGE_ID_PARAM} ${OS_TYPE_PARAM} ${TEST_TYPE_PARAM} ${TEST_TIME_PARAM} ${STRICT_MODE_PARAM} ${APP_TYPE_PARAM}')
+                }
+            }
+        }
+
         stage('Analize battery stats') {
             steps {
                 sh '''
@@ -83,10 +110,6 @@ pipeline {
                 echo "**********************************************************"
                 sleep 10
                 '''
-
-                script {
-                    compileAndroid = sh (script: 'bash scripts/tests.sh ${PACKAGE_ID_PARAM} ${OS_TYPE_PARAM} ${TEST_TYPE_PARAM} ${TEST_TIME_PARAM} ${STRICT_MODE_PARAM} ${APP_TYPE_PARAM}')
-                }
 
                 script {
                     buildFile = sh (script: 'python3 ${WORKSPACE}/scripts/readit.py ${WORKSPACE} ${OS_TYPE_PARAM} ${TEST_TYPE_PARAM} ${TEST_TIME_PARAM} ${STRICT_MODE_PARAM} ${APP_TYPE_PARAM} ${PACKAGE_ID_PARAM}')
