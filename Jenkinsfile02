@@ -77,6 +77,16 @@ pipeline {
                     '''
 
                 sh '''
+                    SYSTEM_IMAGES="system-images;android-29;default;x86"
+                                sdkmanager "$SYSTEM_IMAGES"
+                                echo "no" | avdmanager --verbose create avd -n test -k "$SYSTEM_IMAGES"
+                '''
+
+                sh '''
+                    emulator -avd test -delay-adb -verbose -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+                '''
+
+                sh '''
                     ./gradlew :app:connectedDebugAndroidTest
                     '''
             }
