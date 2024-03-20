@@ -187,7 +187,7 @@ try:
 
 except Exception as error:
       STAGE_SUCCESS=0
-      print('An exception occurred: {}'.format(error))
+      print('An exception occurred controlled: {}'.format(error))
 
 
 subprocess.run(["sh", WORKSPACE+'/scripts/analyze.sh',

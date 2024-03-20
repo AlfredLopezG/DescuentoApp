@@ -3,7 +3,7 @@ echo "Emulator start booting..."
 #$ANDROID_HOME/emulator/emulator -avd FirstEmulator -wipe-data -port 5790 &
 EMULATOR_PID=$!
 
-$ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell dumpsys batterystats --reset
+#$ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell dumpsys batterystats --reset
 
 set PACKAGE_ID_PARAM="$1"
 set OS_TYPE_PARAM="$2"
@@ -44,15 +44,18 @@ LOGCAT_PID=$!
 
 if [ "$TEST_TYPE_PARAM" = "manual" ]; then
   # Install app (Only for manually tests)
+  $ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell dumpsys batterystats --reset
+  $ANDROID_HOME/platform-tools/adb logcat -c
+  $ANDROID_HOME/platform-tools/adb logcat > logcat.log & LOGCAT_PID=$!
   ${WORKSPACE}/gradlew installDebug
   let minutes=60*$TEST_TIME_PARAM
   echo "Sleep process for $minutes seconds"
   sleep $minutes
 else
   # Run automated tests
-  #${WORKSPACE}/gradlew :app:connectedCheck :app:installDebug :app:installDebugAndroidTest
-  #$ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell am instrument -w com.example.batterytestapplication/android.support.test.runner.AndroidJUnitRunner
-  ${WORKSPACE}/gradlew connectedAndroidTest
+  ${WORKSPACE}/gradlew :app:connectedCheck :app:installDebug :app:installDebugAndroidTest
+  $ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell am instrument -w com.example.batterytestapplication/android.support.test.runner.AndroidJUnitRunner
+  #${WORKSPACE}/gradlew connectedAndroidTest
 fi
 
 # Generates battery stats file

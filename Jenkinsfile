@@ -76,12 +76,46 @@ pipeline {
                 sh '''
                     $ANDROID_HOME/platform-tools/adb connect 192.168.252.125:5555
                     $ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell input keyevent 82
+                    $ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell dumpsys batterystats --reset
+                    $ANDROID_HOME/platform-tools/adb logcat -c
+                    $ANDROID_HOME/platform-tools/adb logcat > logcat.log & LOGCAT_PID=$!
                     ./gradlew :app:connectedDebugAndroidTest
                     '''
             }
         }
 
-        stage('Generate battery stats') {
+        stage('Generate battery stats automated') {
+            when{
+                expression{
+                    return TEST_TYPE_PARAM == "automated"
+                }
+            }
+
+            steps {
+                sh '''
+                set
+                echo "**********************************************************"
+                echo "*                                                        *"
+                echo "*   🔋 Generar información del consumo de bateria 🔋    *"
+                echo "*                                                        *"
+                echo "**********************************************************"
+                sleep 10
+                '''
+
+                sh '''
+                    ./gradlew :app:assembleDebugAndroidTest
+                    $ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+                    $ANDROID_HOME/platform-tools/adb -s 192.168.252.125:5555 shell dumpsys batterystats "${PACKAGE_ID_PARAM}.test" > ${WORKSPACE}/batterystats.txt
+                '''
+            }
+        }
+        stage('Generate battery stats manual') {
+            when{
+                expression{
+                    return TEST_TYPE_PARAM == "manual"
+                }
+            }
+
             steps {
                 sh '''
                 set
